@@ -1,0 +1,28 @@
+function lrnProc(flyTracks)
+
+[preO,postO,genO] = qwikOproc(flyTracks);
+
+
+    eind = find(genO == 1);
+    econt = find(genO == 0);
+    econt2 = find(genO == 2);
+    
+    %expC{i} = (postC{i}-preC{i})./(1-preC{i});
+    expO = (postO-preO)./(1-preO);
+    
+    % expC{i} = (postC{i}-preC{i});
+    % expO{i} = (postO{i}-preO{i});
+    
+    
+    %exp2 = pre{i};
+    if ~isempty(expO)
+        cntO = expO(econt);
+        cntO2 = expO(econt2);
+        expO = expO(eind);
+    end
+
+
+mattBox(cntO,{expO})
+
+
+
