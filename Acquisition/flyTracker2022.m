@@ -1,5 +1,5 @@
-function flyTracks = flyTracker2014
-%FLYTRACKER2013 Test odor preferences of individual flies.
+function flyTracks = flyTracker2022
+%FLYTRACKER2022 Test odor preferences of individual flies.
 %   FLYTRACKS = FLYTRACKER2013 tracks several individual flies in realtime
 %   and controls stimulus delivery for testing odor preference.  Output
 %   flyTracks is a structure containing individual fly statistics from the
@@ -32,8 +32,8 @@ dlmwrite(cenID, [])                         % create placeholder ASCII file
 dlmwrite(oriID, [])                         % create placeholder ASCII file
 dlmwrite(majID, [])                         % create placeholder ASCII file
 
-recordMovie = 0;                            % whether to stream experiment to MP4 movie file
-useTemplateMatching = 1;                    % whether to use template matching for bg detection
+recordMovie = 1;                            % whether to stream experiment to MP4 movie file
+useTemplateMatching = 0;                    % whether to use template matching for bg detection
 recordThermocouple = 0;                     % whether to record data from thermocouple - synced with display updates, every 'dispRate' frames
 if recordThermocouple, initializeThermocouple; end
 
@@ -90,6 +90,7 @@ flyTracks.nFlies = sum(arenaData.tunnelActive); % get total number of flies
 
 currentFrame = peekdata(vid,1);                 % grab first display frame
 
+figure(1);
 h = image(currentFrame); colormap(gray)         % set initial display
 
 % For display
@@ -155,9 +156,19 @@ while toc < duration
     currentFrame = peekdata(vid,1);                 % Grab new frame
     flyTracks.times(ct) = now;                      % Timestamp the frame
     delta = arenaData.bg - currentFrame;            % Make difference image
-    %props = regionprops((delta >= 50), propFields);
-    props = regionprops((delta >= arenaData.flyThresh), propFields); % Get fly properties
     
+    dsize=size(delta);
+    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3);
+%     error("check delta here")
+%     threshold=
+    %props = regionprops((delta >= 50), propFields);
+%     props = regionprops((delta >= min(arenaData.flyThresh)), propFields); % Get fly properties
+%     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
+    props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
+
+    %Median was a cludge, but this should probably be done for eachfly,
+    %unclear how it is supposed to work?
+
     % Match each props element to preceeding fly centroids
     
     if ct == 1           % on first pass, load previous idxs from arenaData
@@ -185,7 +196,7 @@ while toc < duration
 
         % a props element corresponds to a fly when the centroid distance
         % is < 18 px since last frame
-        flyIdx = find(d < 18);
+        flyIdx = find(d < 30);%increased to 30 for higher res camera
         
         if flyIdx
             flyTracks.centroid(flyIdx,:) = single(props(i).Centroid);
@@ -216,9 +227,13 @@ while toc < duration
     
     % update the display with centroid, major axis, and running tail
     if mod(ct,dispRate) == 0
-        [tailCount c ori] = updatePlot(h, currentFrame, duration, epoch,...
+%         error("hello")
+        [tailCount c ori] = updatePlot(h, delta>threshold, duration, epoch,...
             tailCount, flyTracks, colors, c, ori);
-        
+%         [tailCount c ori] = updatePlot(h, currentFrame, duration, epoch,...
+%             tailCount, flyTracks, colors, c, ori);
+                
+      
         if recordThermocouple
             flyTracks.thermocouple(ct) = inputSingleScan(NI);
         end
@@ -270,7 +285,7 @@ for s = 1:length(stim)
 end
 
 stop(vid)
-vid.ROIPosition = [0 0 640 480];            % Reset camera ROI to full size
+% vid.ROIPosition = [0 0 640 480];            % Reset camera ROI to full size
 
 if recordMovie
     close(writerObj)

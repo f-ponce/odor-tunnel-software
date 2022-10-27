@@ -17,11 +17,16 @@ end
 % odors = {'Apple' 'Grape'};
 % conc = [0.05 0.1];                  % proportion saturated vapor
 
-odors = {'MCH' 'Air'};
-conc = [0.15 0.03];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
-odors = {'MCH' 'OCT'};
-conc = [0.16 0.13];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
+% odors = {'MCH' 'Air'};
+% conc = [0.15 0.03];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
+% odors = {'MCH' 'OCT'};
+% conc = [0.16 0.13];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
 
+
+odors = {'Air' 'MCH'};
+conc = [0.03 0.15];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
+odors = {'OCT' 'MCH'};
+conc = [0.13 0.16];%  -aMW ctrl   
 % 15 11
 %conc = [0.09 0.15];
 % OLD --------
@@ -40,13 +45,19 @@ conc = [0.16 0.13];%  -aMW ctrl               % proportion saturated vapor      
 % R14C11/TNT = [0.14 0.15]
 % VT046560/shi[tsJFRC] = [0.1 0.1]
 %180
-odorDur = 180;                        % in sec
-isi = 10;                            % in sec
+% odorDur = 180;                        % in sec
+% isi = 10;                            % in sec
+% nBlocks = 1;                         % number of odor blocks
+% %180
+% preTime = 180;                       % wait time before first odor block
+% postTime = 30;                      % wait time after last odor block
+
+odorDur = 18;                        % in sec
+isi = 1;                            % in sec
 nBlocks = 1;                         % number of odor blocks
 %180
-preTime = 180;                       % wait time before first odor block
-postTime = 30;                      % wait time after last odor block
-
+preTime = 18;                       % wait time before first odor block
+postTime = 3;                      % wait time after last odor block
 % odorDur = 180;                        % in sec
 % isi = 10;                            % in sec
 % nBlocks = 1;                         % number of odor blocks
@@ -55,7 +66,7 @@ postTime = 30;                      % wait time after last odor block
 % postTime = 30;                      % wait time after last odor block
 
 % Read valve assignments from csv file
-fid = fopen('C:\Users\khonegger\Documents\MATLAB\TunnelSoftware\Acquisition\odors.csv');
+fid = fopen('.\TunnelSoftware\Acquisition\odors.csv');
 v = textscan(fid, '%s %d %d', 'delimiter', ','); % Format: {Odor, SideA, SideB}
 fclose(fid);
 

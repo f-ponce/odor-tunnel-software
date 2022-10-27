@@ -12,6 +12,9 @@ chargeTime = 5;                                 % Amount of time (sec)
 odorPeriod = presentAir([0.2 0.2]);   % Start flushing tunnels with air
 
 [stimTimes stim duration] = constructStimulus;
+disp(duration)
+disp(stimTimes)
+disp(stim)
 
 finalValveState = 0; % Set initial Final Valve state
 
@@ -30,7 +33,12 @@ while toc < duration
             % flip final valve
             
             valves = stim(block).odor(2,:);
+            disp('present odor')
+            disp(toc)
+
             conc = stim(block).odor(1,:);
+            disp(valves);
+            disp(conc);
             odorPeriod = presentOdor(valves, conc);
         end
         
@@ -49,3 +57,5 @@ while toc < duration
         
     end
 end
+
+disp("Done with runOdorProtocol")

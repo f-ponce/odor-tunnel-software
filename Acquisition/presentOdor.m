@@ -11,7 +11,7 @@ valveState = zeros(1,24);   % close empty valves
 valveState(valves(1)) = 1;  % open odor valves
 valveState(valves(2)) = 1;
 valveState(11) = 1; % leave SainSmart off
-
+% disp(valveState)
 outputSingleScan(NI,valveState);
 
 % Fudge factors to compensate for MFC offset and tubing leaks
@@ -25,6 +25,9 @@ flowA = calcFlow(totalFlow(1)-(totalFlow(1)*conc(1)) + aOffset*(totalFlow(1)>0),
 flowB = calcFlow(totalFlow(2)-(totalFlow(2)*conc(2)) + bOffset*(totalFlow(2)>0),5);
 flowD = calcFlow(totalFlow(1)*conc(1) + cOffset*(totalFlow(1)>0),1);
 flowC = calcFlow(totalFlow(2)*conc(2) + dOffset*(totalFlow(2)>0),1);
+% disp(flowA)
+% disp(AC)
+% disp(sprintf('%s%0.0f','A',flowA))
 
 fprintf(AC, sprintf('%s%0.0f','A',flowA));
 fprintf(AC, sprintf('%s%0.0f','B',flowB));

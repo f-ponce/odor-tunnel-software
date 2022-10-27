@@ -19,7 +19,7 @@ presentAir([0.2 0.2], 1.5, 1);
 pause(5)
 presentAir([0.2 0.2], 0, 0);
 
-% initializeCamera;
+initializeCamera();
 
 global vid
 

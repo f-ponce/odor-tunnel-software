@@ -11,10 +11,13 @@ function varargout=connectAlicat(aliComm)
 if nargin==0
 
     global aliComm
-    aliComm=serial('COM2',... %%RTM EDIT from COM4
-        'TimeOut', 2,...
-        'BaudRate', 19200,...
-        'Terminator','CR');
+%     aliComm=serial('COM3',... %%RTM EDIT from COM4
+%         'TimeOut', 2,...
+%         'BaudRate', 19200,...
+%         'Terminator','CR');
+    available_serialport=serialportlist;
+    aliComm=serialport(available_serialport, 19200, "Timeout",2);
+    configureTerminator(aliComm, "CR")
 
     fopen(aliComm)
     varargout{1}=aliComm;
