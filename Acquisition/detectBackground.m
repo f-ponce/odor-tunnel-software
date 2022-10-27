@@ -22,6 +22,9 @@ end
 flysize=20;
 % vid.ROIPosition = [0 0 640 480];
 % vid.ROIPosition = [250 250 1800 800];
+
+%coordinates to limit ROI to just the arena, adjust if all arenas aren't in
+%frame
 x1=250;
 y1=252;
 % x1=0;
@@ -41,7 +44,7 @@ try
     disp("Sucesfully loaded blankBg.mat")
     background_detected=1;
 catch
-    warning('There was an error loading the background image file blankBg.mat')
+    error('There was an error loading the background image file blankBg.mat')
     blankBg = uint8(zeros(size(peekdata(vid,1))));
 end
 
@@ -49,7 +52,7 @@ ct = 0;
 % disp("ct equals zero")
 
 if background_detected
-    timeout=30;
+    timeout=300; %The code will still run if all flies don't move if the background is preloaded
 else
     timeout = 300;  % 5 min timeout period
 end
@@ -155,7 +158,11 @@ while toc < timeout
     else
         l=findarenas(fr);
     end
-    fr=100+fr-blankBg;
+
+%     fr=100+fr-blankBg;
+    %Subtract background from image, subtract from brightest point to keep
+    %flies dark
+
     fr=max(max(blankBg))+fr-blankBg;
     %         p = regionprops(l>0, props);
     p = regionprops(imerode(l>0,[1 1 1; 1 1 1]), props);
@@ -347,7 +354,7 @@ end
 if background_detected
     out.bg=blankBg
 else
-    out.bg = bg;  %background image
+    out.bg = bg;  %background image. Not correctly calculated now
 end
 out.blankBg = blankBg; %blank background image of ROI
 out.tunnelActive = hasFlies;  %whether each tunnel contains a fly

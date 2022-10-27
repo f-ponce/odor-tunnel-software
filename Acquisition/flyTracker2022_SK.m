@@ -55,7 +55,7 @@ propFields = {'Centroid' 'Orientation' 'MajorAxisLength'}; % Get items from
                                                            
                                                            
 % Begin main script
-[stimTimes, stim, duration] = constructStimulus(chargeTime);
+[stimTimes, stim, duration] = constructStimulus_sk(chargeTime);
 %[stimTimes, stim, duration] = constructStimulus_m('MCH','OCT',false); % Stimlus
                                                            % timecourse
                                                            % for experiment
