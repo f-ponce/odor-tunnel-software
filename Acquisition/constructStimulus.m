@@ -25,8 +25,8 @@ end
 
 odors = {'Air' 'MCH'};
 conc = [0.03 0.15];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
-odors = {'OCT' 'MCH'};
-conc = [0.13 0.16];%  -aMW ctrl   
+odors = {'OCT' 'Air'};
+conc = [0.18 0.03];%  -aMW ctrl   
 % 15 11
 %conc = [0.09 0.15];
 % OLD --------
@@ -52,12 +52,12 @@ conc = [0.13 0.16];%  -aMW ctrl
 % preTime = 180;                       % wait time before first odor block
 % postTime = 30;                      % wait time after last odor block
 
-odorDur = 18;                        % in sec
+odorDur = 180;                        % in sec
 isi = 1;                            % in sec
 nBlocks = 1;                         % number of odor blocks
 %180
-preTime = 18;                       % wait time before first odor block
-postTime = 3;                      % wait time after last odor block
+preTime = 180;                       % wait time before first odor block
+postTime = 30;                      % wait time after last odor block
 % odorDur = 180;                        % in sec
 % isi = 10;                            % in sec
 % nBlocks = 1;                         % number of odor blocks

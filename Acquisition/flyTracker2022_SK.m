@@ -1,4 +1,4 @@
-function flyTracks = flyTracker2022
+function flyTracks = flyTracker2022sk
 %FLYTRACKER2022 Test odor preferences of individual flies.
 %   FLYTRACKS = FLYTRACKER2013 tracks several individual flies in realtime
 %   and controls stimulus delivery for testing odor preference.  Output
