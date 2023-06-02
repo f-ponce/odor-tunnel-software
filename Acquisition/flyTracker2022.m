@@ -1,4 +1,4 @@
-function flyTracks = flyTracker2022
+function flyTracks = flyTracker2022(odors, conc)
 %FLYTRACKER2022 Test odor preferences of individual flies.
 %   FLYTRACKS = FLYTRACKER2013 tracks several individual flies in realtime
 %   and controls stimulus delivery for testing odor preference.  Output
@@ -55,10 +55,6 @@ propFields = {'Centroid' 'Orientation' 'MajorAxisLength'}; % Get items from
                                                            
                                                            
 % Begin main script
-% odors = {'OCT' 'Air'};
-% conc = [.5 0.03];%  -aMW ctrl   
-odors = {'Air' 'OCT'}; %SK, this is the line you want to swap to
-conc = [0.03 .5];%  -aMW ctrl 
 [stimTimes, stim, duration] = constructStimulus(chargeTime, odors, conc);
 %[stimTimes, stim, duration] = constructStimulus_m('MCH','OCT',false); % Stimlus
                                                            % timecourse
