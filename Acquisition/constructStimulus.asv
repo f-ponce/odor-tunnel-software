@@ -6,7 +6,7 @@ function [stimTimes, stim, duration] = constructStimulus(chargeTime)
 %   To do:
 %   1. Add capability for >1 odor pair or concentration
 %   2. Convert to GUI for easier setup of complicated exp protocols
-% 
+%
 %   Revised July 21, 2013
 %   Kyle Honegger, Harvard & CSHL
 

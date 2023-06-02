@@ -1,11 +1,11 @@
 function [blockedimage, boundingbox]=findarenas(testimage, horizontalthresh, verticalthresh,minwidth, minheight, padding, debug)
     arguments
         testimage;
-        horizontalthresh (1,1) double=.5;
-        verticalthresh (1,1) double=.8;
-        minwidth (1,1) double = 50;
+        horizontalthresh (1,1) double=.6;
+        verticalthresh (1,1) double=.7;
+        minwidth (1,1) double = 10;
         minheight (1,1) double = 450;
-        padding (1,1) double=2;
+        padding (1,1) double=15;
         debug logical=false;
     end
 
@@ -86,8 +86,8 @@ bi_bb(1).BoundingBox;
 % boundingbox2=reshape([bi_bb(:).BoundingBox], [length(bi_bb),4])';
 boundingbox2=reshape([bi_bb(:).BoundingBox], [4,length(bi_bb)]);
 boundingbox=boundingbox2;
-boundingbox(1,:)=boundingbox(1,:)-padding;
-boundingbox(2,:)=boundingbox(2,:)-padding;
+boundingbox(1,:)=max(boundingbox(1,:)-padding,2);
+boundingbox(2,:)=max(boundingbox(2,:)-padding,2);
 boundingbox(3,:)=min(boundingbox2(1,:)+boundingbox2(3,:)+padding,imsize(2));
 boundingbox(4,:)=min(boundingbox2(2,:)+boundingbox2(4,:)+padding,imsize(1));
 % boundingbox(3,:)=boundingbox(3,:);

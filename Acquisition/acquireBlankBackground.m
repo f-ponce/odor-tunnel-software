@@ -10,8 +10,8 @@ if isrunning(vid)
     stop(vid)
 end
 
-x1=250;
-y1=252;
+x1=660;
+y1=298;
 % x1=0;
 % y1=0;
 % x2=1800+x1;

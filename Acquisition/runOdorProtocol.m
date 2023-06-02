@@ -13,7 +13,7 @@ odorPeriod = presentAir([0.2 0.2]);   % Start flushing tunnels with air
 
 [stimTimes stim duration] = constructStimulus;
 disp(duration)
-disp(stimTimes)
+% disp(stimTimes)
 disp(stim)
 
 finalValveState = 0; % Set initial Final Valve state

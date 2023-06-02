@@ -19,14 +19,14 @@ if isrunning(vid)
     stop(vid)
 end
 
-flysize=20;
+flysize=30;
 % vid.ROIPosition = [0 0 640 480];
 % vid.ROIPosition = [250 250 1800 800];
 
 %coordinates to limit ROI to just the arena, adjust if all arenas aren't in
 %frame
-x1=250;
-y1=252;
+x1=660;
+y1=298;
 % x1=0;
 % y1=0;
 % x2=1800+x1;
@@ -52,7 +52,7 @@ ct = 0;
 % disp("ct equals zero")
 
 if background_detected
-    timeout=300; %The code will still run if all flies don't move if the background is preloaded
+    timeout=100; %The code will still run if all flies don't move if the background is preloaded
 else
     timeout = 300;  % 5 min timeout period
 end
@@ -69,7 +69,7 @@ while toc < timeout
 %     error("subtracted background")
     % 1. Identify contiguous areas of bright space (tunnels)
     clf
-    clear p l idx
+    clear p l idx %l was cleared here once
     tun = [];
     
     if ct == 1
@@ -154,11 +154,13 @@ while toc < timeout
     %         l = imdilate(logical(fr <= ub & fr >= lb), [1; 1; 1; 1; 1; 1; 1]);
     %Prefer figuring out ROIs from background image, otherwise use fr
     if background_detected
+%             disp("Started Finding Arenas")
         l=findarenas(blankBg);
+%             disp("Finished finding arenas")
     else
         l=findarenas(fr);
     end
-
+%     end
 %     fr=100+fr-blankBg;
     %Subtract background from image, subtract from brightest point to keep
     %flies dark
@@ -167,6 +169,7 @@ while toc < timeout
     %         p = regionprops(l>0, props);
     p = regionprops(imerode(l>0,[1 1 1; 1 1 1]), props);
     
+%     error("line172")
 
     for i = 1:length(p)
         tun(i)=1;
@@ -176,7 +179,7 @@ while toc < timeout
     
     if ct == 1 && sum(tun) < 15
         ct = 0;
-%         disp("we're getting here (line 128)")
+        disp("we're getting here (line 128)")
         continue % force initial detection of 15 tunnels
     end
     

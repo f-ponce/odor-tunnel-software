@@ -65,8 +65,14 @@ for i=1:length(flyTracks.corridorPos)
 end
 
 inCorridor = squeeze(inCorridor);
-allEnters = diff(inCorridor) > 0;
-allExits = diff(inCorridor) < 0;
+Orientation="Normal"
+if orientation=="Reverse"
+    allEnters = diff(inCorridor) < 0;
+    allExits = diff(inCorridor) > 0;
+else
+    allEnters = diff(inCorridor) > 0;
+    allExits = diff(inCorridor) < 0;
+end
 
 
 
