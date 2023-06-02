@@ -55,7 +55,11 @@ propFields = {'Centroid' 'Orientation' 'MajorAxisLength'}; % Get items from
                                                            
                                                            
 % Begin main script
-[stimTimes, stim, duration] = constructStimulus(chargeTime);
+% odors = {'OCT' 'Air'};
+% conc = [.5 0.03];%  -aMW ctrl   
+odors = {'Air' 'OCT'}; %SK, this is the line you want to swap to
+conc = [0.03 .5];%  -aMW ctrl 
+[stimTimes, stim, duration] = constructStimulus(chargeTime, odors, conc);
 %[stimTimes, stim, duration] = constructStimulus_m('MCH','OCT',false); % Stimlus
                                                            % timecourse
                                                            % for experiment
