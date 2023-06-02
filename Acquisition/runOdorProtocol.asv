@@ -11,7 +11,7 @@ chargeTime = 5;                                 % Amount of time (sec)
                                                 
 odorPeriod = presentAir([0.2 0.2]);   % Start flushing tunnels with air
 
-[stimTimes stim duration] = constructStimulus(chargeTime, odors, conc);
+[stimTimes stim duration] = constructStimulus;
 disp(duration)
 % disp(stimTimes)
 disp(stim)
