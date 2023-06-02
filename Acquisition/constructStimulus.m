@@ -1,4 +1,4 @@
-function [stimTimes, stim, duration] = constructStimulus(chargeTime)
+function [stimTimes, stim, duration] = constructStimulus(chargeTime, odors, conc)
 % function [stimTimes, stim, duration] = constructStimulus
 %
 % Currently only supports a single pair of odors.
@@ -23,12 +23,12 @@ end
 % conc = [0.16 0.13];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
 
 
-odors = {'Air' 'MCH'};
-conc = [0.03 0.15];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
-odors = {'OCT' 'Air'};
-conc = [.5 0.03];%  -aMW ctrl   
-odors = {'Air' 'OCT'}; %SK, this is the line you want to swap to
-conc = [0.03 .5];%  -aMW ctrl  
+% odors = {'Air' 'MCH'};
+% conc = [0.03 0.15];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
+% odors = {'OCT' 'Air'};
+% conc = [.5 0.03];%  -aMW ctrl   
+% odors = {'Air' 'OCT'}; %SK, this is the line you want to swap to
+% conc = [0.03 .5];%  -aMW ctrl  
 % odors = {'OCT' 'OCT'}; %SK, this is the line you want to swap to
 % conc = [0.5 0.5];%  -aMW ctrl  
 % 15 11
