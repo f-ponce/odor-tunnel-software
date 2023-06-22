@@ -165,6 +165,9 @@ while toc < duration
 %     props = regionprops((delta >= min(arenaData.flyThresh)), propFields); % Get fly properties
 %     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
     props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
+    
+    if length(props)>15
+        error("Detecting too many flies")
 
     %Median was a cludge, but this should probably be done for eachfly,
     %unclear how it is supposed to work?
