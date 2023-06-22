@@ -3,7 +3,7 @@ function [blockedimage, boundingbox]=findarenas(testimage, horizontalthresh, ver
         testimage;
         horizontalthresh (1,1) double=.6;
         verticalthresh (1,1) double=.7;
-        minwidth (1,1) double = 10;
+        minwidth (1,1) double = 50;
         minheight (1,1) double = 450;
         padding (1,1) double=15;
         debug logical=false;

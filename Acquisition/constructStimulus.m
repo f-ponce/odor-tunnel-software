@@ -56,12 +56,12 @@ end
 % preTime = 180;                       % wait time before first odor block
 % postTime = 30;                      % wait time after last odor block
 
-odorDur = 30;                        % in sec
+odorDur = 180;                        % in sec
 isi = 10;                            % in sec
 nBlocks = 1;                         % number of odor blocks
 %180
-preTime = 30;                       % wait time before first odor block
-postTime = 10;                      % wait time after last odor block
+preTime = 180;                       % wait time before first odor block
+postTime = 30;                      % wait time after last odor block
 % odorDur = 180;                        % in sec
 % isi = 10;                            % in sec
 % nBlocks = 1;                         % number of odor blocks

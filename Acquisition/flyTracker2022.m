@@ -158,7 +158,7 @@ while toc < duration
     delta = arenaData.bg - currentFrame;            % Make difference image
     
     dsize=size(delta);
-    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3);
+    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.7); %Adjust this threshold if there seems to be a problem
 %     error("check delta here")
 %     threshold=
     %props = regionprops((delta >= 50), propFields);
