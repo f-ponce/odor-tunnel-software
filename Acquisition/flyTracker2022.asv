@@ -315,32 +315,32 @@ end
 end
 
 % Helper function for updating the plot
-    function [tailCount c ori] = updatePlot(h, currentFrame, duration, ...
-        epoch, tailCount, flyTracks, colors, c, ori)
-    
-        set(h,'CData',currentFrame)     % update display with current frame
+function [tailCount c ori] = updatePlot(h, currentFrame, duration, ...
+    epoch, tailCount, flyTracks, colors, c, ori)
+
+set(h,'CData',currentFrame)     % update display with current frame
         
         
-        timeLeft = round(duration - toc);
-        title(['Tracking Flies - ' epoch ' (' sprintf('%d',timeLeft) ...
-            's remaining)'])
-        tailCount = tailCount + 1;
+timeLeft = round(duration - toc);
+title(['Tracking Flies - ' epoch ' (' sprintf('%d',timeLeft) ...
+    's remaining)'])
+tailCount = tailCount + 1;
         
       
-        % calculate major axis limits
-        for i = 1:flyTracks.nFlies
-            
-            r = flyTracks.majorAxisLength(i)/2;
-            x = r * cos(flyTracks.orientation(i) * (pi/180));
-            y = r * sin(flyTracks.orientation(i) * (pi/180));
-            
-            lx = [flyTracks.centroid(i,1) + x, ...
-                flyTracks.centroid(i,1) - x];
-            ly = [flyTracks.centroid(i,2) - y, ...
-                flyTracks.centroid(i,2) + y];
-            
-            majAx{i} = [lx; ly];
-        end
+% calculate major axis limits
+for i = 1:flyTracks.nFlies
+    
+    r = flyTracks.majorAxisLength(i)/2;
+    x = r * cos(flyTracks.orientation(i) * (pi/180));
+    y = r * sin(flyTracks.orientation(i) * (pi/180));
+    
+    lx = [flyTracks.centroid(i,1) + x, ...
+        flyTracks.centroid(i,1) - x];
+    ly = [flyTracks.centroid(i,2) - y, ...
+        flyTracks.centroid(i,2) + y];
+    
+    majAx{i} = [lx; ly];
+end
 
 
 % update the display with new cen, maj ax, and running tails

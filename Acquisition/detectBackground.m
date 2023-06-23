@@ -52,7 +52,7 @@ ct = 0;
 % disp("ct equals zero")
 
 if background_detected
-    timeout=10; %The code will still run if all flies don't move if the background is preloaded
+    timeout=60; %The code will still run if all flies don't move if the background is preloaded
 else
     timeout = 300;  % 5 min timeout period
 end
