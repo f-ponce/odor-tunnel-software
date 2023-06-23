@@ -90,7 +90,7 @@ flyTracks.nFlies = sum(arenaData.tunnelActive); % get total number of flies
 
 currentFrame = peekdata(vid,1);                 % grab first display frame
 
-figure(1);
+figure(2);
 h = image(currentFrame); colormap(gray)         % set initial display
 
 % For display
@@ -155,19 +155,22 @@ while toc < duration
     % 2. Detect flies, extract kinematic data
     currentFrame = peekdata(vid,1);                 % Grab new frame
     flyTracks.times(ct) = now;                      % Timestamp the frame
-    delta = arenaData.bg - currentFrame;            % Make difference image
-    
-    dsize=size(delta);
-    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3); %Adjust this threshold if there seems to be a problem
-%     error("check delta here")
-%     threshold=
-    %props = regionprops((delta >= 50), propFields);
-%     props = regionprops((delta >= min(arenaData.flyThresh)), propFields); % Get fly properties
-%     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
-    props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
-    
+%     delta = arenaData.bg - currentFrame;            % Make difference image
+%     
+%     dsize=size(delta);
+%     threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3); %Adjust this threshold if there seems to be a problem
+% %     error("check delta here")
+% %     threshold=
+%     %props = regionprops((delta >= 50), propFields);
+% %     props = regionprops((delta >= min(arenaData.flyThresh)), propFields); % Get fly properties
+% %     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
+%     props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
+%     
+    [props, delta, threshold]=detectflies(currentFrame, arenaData.bg);
+
     if length(props)>15
         error("Detecting too many flies")
+    end
 
     %Median was a cludge, but this should probably be done for eachfly,
     %unclear how it is supposed to work?
@@ -298,68 +301,73 @@ end
 save(strcat(fpath,t,".mat"), "flyTracks");
 
 % Helper function for updating the plot
-    function [tailCount c ori] = updatePlot(h, currentFrame, duration, ...
-            epoch, tailCount, flyTracks, colors, c, ori)
 
-        set(h,'CData',currentFrame)     % update display with current frame
-        
-        
-        timeLeft = round(duration - toc);
-        title(['Tracking Flies - ' epoch ' (' sprintf('%d',timeLeft) ...
-            's remaining)'])
-        tailCount = tailCount + 1;
-        
-        
-        % calculate major axis limits
-        for i = 1:flyTracks.nFlies
-            
-            r = flyTracks.majorAxisLength(i)/2;
-            x = r * cos(flyTracks.orientation(i) * (pi/180));
-            y = r * sin(flyTracks.orientation(i) * (pi/180));
-            
-            lx = [flyTracks.centroid(i,1) + x, ...
-                flyTracks.centroid(i,1) - x];
-            ly = [flyTracks.centroid(i,2) - y, ...
-                flyTracks.centroid(i,2) + y];
-            
-            majAx{i} = [lx; ly];
-        end
-        
-        
-        % update the display with new cen, maj ax, and running tails
-        for k = 1:flyTracks.nFlies
-            
-            hold all
-            
-            if tailCount > 1
-                set(c(k), 'XData', squeeze(flyTracks.runningTracks(k,1,:)), ...
-                    'YData', squeeze(flyTracks.runningTracks(k,2,:)),...
-                    'LineWidth', 2, 'Color', colors(k,:));
-                
-                set(ori(k), 'XData', majAx{k}(1,:), ...
-                    'YData', majAx{k}(2,:),...
-                    'LineWidth', 2, 'Color', 'g');
-                
-            else
-                c(k) = plot(squeeze(flyTracks.runningTracks(k,1,:)),...
-                    squeeze(flyTracks.runningTracks(k,2,:)),...
-                    'LineWidth', 2, 'color', colors(k,:));
-                
-                ori(k) = plot(majAx{k}(1,:), majAx{k}(2,:), ...
-                    'LineWidth',2,'color','g');
-                
-            end
-            
-        end
-        
-        drawnow
-        
-        if recordMovie
-            writeVideo(writerObj,getframe);
-        end
+    
+    drawnow
+    
+    if recordMovie
+        writeVideo(writerObj,getframe);
     end
+
+
 try
 webread('http://lab.debivort.org/mu.php?id=smells&st=2');
+end
+
+end
+
+function [tailCount, c, ori] = updatePlot(h, currentFrame, duration, ...
+    epoch, tailCount, flyTracks, colors, c, ori)
+
+set(h,'CData',currentFrame)     % update display with current frame
+
+
+timeLeft = round(duration - toc);
+title(['Tracking Flies - ' epoch ' (' sprintf('%d',timeLeft) ...
+    's remaining)'])
+tailCount = tailCount + 1;
+
+
+% calculate major axis limits
+for i = 1:flyTracks.nFlies
+    
+    r = flyTracks.majorAxisLength(i)/2;
+    x = r * cos(flyTracks.orientation(i) * (pi/180));
+    y = r * sin(flyTracks.orientation(i) * (pi/180));
+    
+    lx = [flyTracks.centroid(i,1) + x, ...
+        flyTracks.centroid(i,1) - x];
+    ly = [flyTracks.centroid(i,2) - y, ...
+        flyTracks.centroid(i,2) + y];
+    
+    majAx{i} = [lx; ly];
+end
+
+
+% update the display with new cen, maj ax, and running tails
+for k = 1:flyTracks.nFlies
+    
+    hold all
+    
+    if tailCount > 1
+        set(c(k), 'XData', squeeze(flyTracks.runningTracks(k,1,:)), ...
+            'YData', squeeze(flyTracks.runningTracks(k,2,:)),...
+            'LineWidth', 2, 'Color', colors(k,:));
+        
+        set(ori(k), 'XData', majAx{k}(1,:), ...
+            'YData', majAx{k}(2,:),...
+            'LineWidth', 2, 'Color', 'g');
+        
+    else
+        c(k) = plot(squeeze(flyTracks.runningTracks(k,1,:)),...
+            squeeze(flyTracks.runningTracks(k,2,:)),...
+            'LineWidth', 2, 'color', colors(k,:));
+        
+        ori(k) = plot(majAx{k}(1,:), majAx{k}(2,:), ...
+            'LineWidth',2,'color','g');
+        
+    end
+    
 end
 end
 
