@@ -4,15 +4,25 @@ function [props, delta, threshold]=detectflies(currentFrame, background)
     delta = background - currentFrame;            % Make difference image
         
     
-    flysize=100;
+    flysize=50;
     dsize=size(delta);
     threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3);
     
-    props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
+    numerodes=2;
+    thresholdedimage=delta >= threshold;
+    for erodes=1:numerodes
+        thresholdedimage=imerode(thresholdedimage,[1 1 1; 1 1 1]);
+        disp(erodes)
+    end
+
+    props = regionprops(thresholdedimage, propFields);
     allareas=[props.Area];
     allareas_bool=allareas>flysize;
     flyareas_index=find(allareas_bool);
     props=props(flyareas_index);
+%     figure(3)
+%     imshow(thresholdedimage)
+%     disp([props.Area])
 %     disp("How many were above threshold?")
 %     disp(sum(allareas_bool))
 

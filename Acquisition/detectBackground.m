@@ -19,7 +19,7 @@ if isrunning(vid)
     stop(vid)
 end
 
-flysize=30;
+flysize=100;
 % vid.ROIPosition = [0 0 640 480];
 % vid.ROIPosition = [250 250 1800 800];
 
@@ -52,7 +52,7 @@ ct = 0;
 % disp("ct equals zero")
 
 if background_detected
-    timeout=60; %The code will still run if all flies don't move if the background is preloaded
+    timeout=10; %The code will still run if all flies don't move if the background is preloaded
 else
     timeout = 300;  % 5 min timeout period
 end

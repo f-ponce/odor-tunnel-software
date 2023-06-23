@@ -169,7 +169,10 @@ while toc < duration
     [props, delta, threshold]=detectflies(currentFrame, arenaData.bg);
 
     if length(props)>15
+        disp("Detecting too many flies")
         error("Detecting too many flies")
+    elseif length(props)<15
+        disp("Detected less than 15 flies")
     end
 
     %Median was a cludge, but this should probably be done for eachfly,
@@ -301,18 +304,7 @@ end
 save(strcat(fpath,t,".mat"), "flyTracks");
 
 
-  drawnow
-    
-    if recordMovie
-        writeVideo(writerObj,getframe);
-    end
 
-
-try
-webread('http://lab.debivort.org/mu.php?id=smells&st=2');
-end
-
-end
 
 % Helper function for updating the plot
     function [tailCount c ori] = updatePlot(h, currentFrame, duration, ...
@@ -367,6 +359,19 @@ for k = 1:flyTracks.nFlies
         
     end
     
+end
+
+  drawnow
+    
+    if recordMovie
+        writeVideo(writerObj,getframe);
+    end
+
+
+try
+webread('http://lab.debivort.org/mu.php?id=smells&st=2');
+end
+
 end
 end
 
