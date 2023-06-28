@@ -166,7 +166,8 @@ while toc < duration
 % %     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
 %     props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
 %     
-    [props, delta, threshold]=detectflies(currentFrame, arenaData.bg);
+    [props, delta, threshold]=detectflies(currentFrame, arenaData);
+    props=props';
 
     if length(props)>15
         disp("Detecting too many flies")
@@ -195,25 +196,39 @@ while toc < duration
     flyTracks.orientation = NaN(1,flyTracks.nFlies);
     flyTracks.majorAxisLength = NaN(1,flyTracks.nFlies);
     
-    for i = 1:size(props,1)
-        % calculate the distance (in px) between previous fly positions and
-        % newly detected objects, identify matches.
-        tmp = [props(i).Centroid; [flyTracks.lastCentroid{:}]'];
-        dx = repmat(dot(tmp, tmp, 2), 1, size(tmp, 1));
-        d = sqrt(dx + dx' - 2* tmp* tmp');
-        d = d(1,2:(length(flyTracks.lastCentroid) + 1));
-
-        % a props element corresponds to a fly when the centroid distance
-        % is < 18 px since last frame
-        flyIdx = find(d < 30);%increased to 30 for higher res camera
+%     if size(props,1)<2
+%         error("Not enough fields")
+%     end
+    
+    for i = 1:length(props)
         
-        if flyIdx
-            flyTracks.centroid(flyIdx,:) = single(props(i).Centroid);
-            flyTracks.orientation(flyIdx) = single(props(i).Orientation);
-            flyTracks.majorAxisLength(flyIdx) = ...
-                single(props(i).MajorAxisLength);
-            flyTracks.lastCentroid{flyIdx} = single(props(i).Centroid)';
-        end
+%         % calculate the distance (in px) between previous fly positions and
+%         % newly detected objects, identify matches.
+%         tmp = [props(i).Centroid; [flyTracks.lastCentroid{:}]'];
+%         dx = repmat(dot(tmp, tmp, 2), 1, size(tmp, 1));
+%         d = sqrt(dx + dx' - 2* tmp* tmp');
+%         d = d(1,2:(length(flyTracks.lastCentroid) + 1));
+% 
+%         % a props element corresponds to a fly when the centroid distance
+%         % is < 18 px since last frame
+%         flyIdx = find(d < 30);%increased to 30 for higher res camera
+%         
+        
+%         if flyIdx
+%         if length(props(i).Centroid)>0
+        flyTracks.centroid(i,:) = single(props(i).Centroid);
+        flyTracks.orientation(i) = single(props(i).Orientation);
+        flyTracks.majorAxisLength(i) = ...
+            single(props(i).MajorAxisLength);
+        flyTracks.lastCentroid{i} = single(props(i).Centroid)';
+%         end
+%         end
+
+%         if i==3
+%             error('check here')
+%         end
+
+    
         
     end
     
