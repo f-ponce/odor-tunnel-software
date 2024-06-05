@@ -107,7 +107,7 @@ finalValveState = 0; % Set initial Final Valve state
 % This frame-by-frame loop runs continuously for total experiment duration
 while toc < duration
 
-    
+
     % Downsample if getting > 60 fps, to avoid processing duplicate frames
     if ct
         if etime(clock, datevec(flyTracks.times(ct))) <= 1/60
@@ -317,9 +317,11 @@ if recordMovie
 end
 
 save(strcat(fpath,t,".mat"), "flyTracks");
+disp(strcat("Saved File at ",fpath,t,".mat"));
 
-
-
+disp("Plotting Summary statistics")
+CalculateOdorOccupancy(flyTracks, fpath)
+disp("Done");
 
 % Helper function for updating the plot
     function [tailCount c ori] = updatePlot(h, currentFrame, duration, ...

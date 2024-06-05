@@ -104,16 +104,17 @@ for qq = 1:nBlocks
     
 end
 
-if v{1}{find(v{2} == valve(1))} == odors{1}
-    conc(1) = conc(1);
-else
-    conc(1) = conc(2);
-end
-if v{1}{find(v{3} == valve(2))} == odors{1}
-    conc(2) = conc(1);
-else
-    conc(2) = conc(2);
-end
+% This is commented out because there's only one vial
+% if v{1}{find(v{2} == valve(1))} == odors{1}
+%     conc(1) = conc(1);
+% else
+%     conc(1) = conc(2);
+% end
+% if v{1}{find(v{3} == valve(2))} == odors{1}
+%     conc(2) = conc(1);
+% else
+%     conc(2) = conc(2);
+% end
 
 
 %Build stimulus epochs

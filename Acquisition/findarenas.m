@@ -8,7 +8,10 @@ function [blockedimage, boundingbox]=findarenas(testimage, horizontalthresh, ver
         padding (1,1) double=15;
         debug logical=false;
     end
-
+% findarenas autocalculates where the arenas are based on an empty arena
+% image. Thresholds should work for current setup, but try missing with
+% thresholds if it's not autodetecting properly. Different cameras or field
+% of view will require changing other parameters.
 
 testimage=double(testimage);
 imsize=size(testimage);

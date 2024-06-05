@@ -3,7 +3,7 @@ function [props, delta, threshold]=detectflies(currentFrame, arenaData)
                                                                % regionprops
     delta = arenaData.bg-currentFrame;            % Make difference image
     dsize=size(delta);
-    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.1);
+    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3);
 
     % Get all ROIS
     tunnel_corner_indexes=round(arenaData.tunnels);
@@ -12,11 +12,11 @@ function [props, delta, threshold]=detectflies(currentFrame, arenaData)
         tunnel_roi=imcrop(delta, tunnel_corner_indexes(:,i));
     
     
-        flysize=50;
+        flysize=70;
         dsize=size(tunnel_roi);
         threshold=prctile(reshape(tunnel_roi,[dsize(1)*dsize(2), 1]), 99.1);
         
-        numerodes=2;
+        numerodes=1;
         thresholdedimage=tunnel_roi >= threshold;
         for erodes=1:numerodes
             thresholdedimage=imerode(thresholdedimage,[1 1 1; 1 1 1]);
@@ -40,6 +40,8 @@ function [props, delta, threshold]=detectflies(currentFrame, arenaData)
             props(i)=props_roi;
 
         else
+            save("image_debug_"+string(datetime('now','Format', 'yy-MM-dd_HH_mm_ss'))+".mat", "currentFrame", "arenaData");
+            disp("Problem here")
             error("Failed to detect fly")
         end
 
