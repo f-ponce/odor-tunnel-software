@@ -1,8 +1,10 @@
 function odorState = presentOdor(valves, conc, totalFlow)
 
 if nargin < 3
-    totalFlow = [1.5 1.537]; %total flow rate through MFCs (L/min)
-    totalFlow = [1.5 1.5]; %total flow rate through MFCs (L/min)
+%     totalFlow = [1.5 1.537]; %total flow rate through MFCs (L/min)
+    totalFlow = [1.5 1.5]; %total flow rate through MFCs (L/min) %Tweak this to calibrate right vs left total
+%     totalFlow = [1 1]; %total flow rate through MFCs (L/min) %Tweak this to calibrate right vs left total
+
 
 end
 
@@ -23,10 +25,10 @@ cOffset = 0; %0.011;
 dOffset = 0; %0.004;
 
 % Calculate flow rates, send to MFCs
-flowA = calcFlow(totalFlow(1)-(totalFlow(1)*conc(1)) + aOffset*(totalFlow(1)>0),5);
-flowB = calcFlow(totalFlow(2)-(totalFlow(2)*conc(2)) + bOffset*(totalFlow(2)>0),5);
-flowD = calcFlow(totalFlow(1)*conc(1) + dOffset*(totalFlow(1)>0),1);
-flowC = calcFlow(totalFlow(2)*conc(2) + cOffset*(totalFlow(2)>0),1);
+flowA = calcFlow(totalFlow(1)-(totalFlow(1)*conc(1)) + aOffset*(totalFlow(1)>0),5); %left side air
+flowB = calcFlow(totalFlow(2)-(totalFlow(2)*conc(2)) + bOffset*(totalFlow(2)>0),5); %right side air
+flowD = calcFlow(totalFlow(1)*conc(1) + dOffset*(totalFlow(1)>0),1); % left side odor
+flowC = calcFlow(totalFlow(2)*conc(2) + cOffset*(totalFlow(2)>0),1); % right side odor
 % disp(flowA)
 % disp(AC)
 % disp(sprintf('%s%0.0f','A',flowA))
