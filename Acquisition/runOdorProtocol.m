@@ -1,8 +1,19 @@
-function runOdorProtocol
+function runOdorProtocol(odors, conc, totalFlow)
 % Use this function to test odor delivery in the absence of fly tracking
 % Calls constructStimulus to assemble odor protocol, so odor delivery
 % should be the same as during a tracking experiment.
 
+if nargin < 3
+%     totalFlow = [1.5 1.537]; %total flow rate through MFCs (L/min)
+    totalFlow = [1.5 1.5]; %total flow rate through MFCs (L/min) %Tweak this to calibrate right vs left total
+%     totalFlow = [1 1]; %total flow rate through MFCs (L/min) %Tweak this to calibrate right vs left total
+
+
+end
+
+disp("Running the following odors in a test")
+disp(odors)
+disp(conc)
 
 chargeTime = 5;                                 % Amount of time (sec)
                                                 % given for odor to charge
@@ -11,7 +22,7 @@ chargeTime = 5;                                 % Amount of time (sec)
                                                 
 odorPeriod = presentAir([0.2 0.2]);   % Start flushing tunnels with air
 
-[stimTimes stim duration] = constructStimulus;
+[stimTimes stim duration] = constructStimulus(chargeTime, odors, conc);
 disp(duration)
 % disp(stimTimes)
 disp(stim)
@@ -39,7 +50,7 @@ while toc < duration
             conc = stim(block).odor(1,:);
             disp(valves);
             disp(conc);
-            odorPeriod = presentOdor(valves, conc);
+            odorPeriod = presentOdor(valves, conc, totalFlow);
         end
         
         if ~finalValveState && etime(clock, odorTime) >= chargeTime

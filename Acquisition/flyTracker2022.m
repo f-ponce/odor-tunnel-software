@@ -1,4 +1,4 @@
-function flyTracks = flyTracker2022
+function flyTracks = flyTracker2022(odors, conc)
 %FLYTRACKER2022 Test odor preferences of individual flies.
 %   FLYTRACKS = FLYTRACKER2013 tracks several individual flies in realtime
 %   and controls stimulus delivery for testing odor preference.  Output
@@ -55,7 +55,7 @@ propFields = {'Centroid' 'Orientation' 'MajorAxisLength'}; % Get items from
                                                            
                                                            
 % Begin main script
-[stimTimes, stim, duration] = constructStimulus(chargeTime);
+[stimTimes, stim, duration] = constructStimulus(chargeTime, odors, conc);
 %[stimTimes, stim, duration] = constructStimulus_m('MCH','OCT',false); % Stimlus
                                                            % timecourse
                                                            % for experiment
@@ -90,7 +90,7 @@ flyTracks.nFlies = sum(arenaData.tunnelActive); % get total number of flies
 
 currentFrame = peekdata(vid,1);                 % grab first display frame
 
-figure(1);
+figure(2);
 h = image(currentFrame); colormap(gray)         % set initial display
 
 % For display
@@ -107,7 +107,7 @@ finalValveState = 0; % Set initial Final Valve state
 % This frame-by-frame loop runs continuously for total experiment duration
 while toc < duration
 
-    
+
     % Downsample if getting > 60 fps, to avoid processing duplicate frames
     if ct
         if etime(clock, datevec(flyTracks.times(ct))) <= 1/60
@@ -155,16 +155,26 @@ while toc < duration
     % 2. Detect flies, extract kinematic data
     currentFrame = peekdata(vid,1);                 % Grab new frame
     flyTracks.times(ct) = now;                      % Timestamp the frame
-    delta = arenaData.bg - currentFrame;            % Make difference image
-    
-    dsize=size(delta);
-    threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3);
-%     error("check delta here")
-%     threshold=
-    %props = regionprops((delta >= 50), propFields);
-%     props = regionprops((delta >= min(arenaData.flyThresh)), propFields); % Get fly properties
-%     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
-    props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
+%     delta = arenaData.bg - currentFrame;            % Make difference image
+%     
+%     dsize=size(delta);
+%     threshold=prctile(reshape(delta,[dsize(1)*dsize(2), 1]), 99.3); %Adjust this threshold if there seems to be a problem
+% %     error("check delta here")
+% %     threshold=
+%     %props = regionprops((delta >= 50), propFields);
+% %     props = regionprops((delta >= min(arenaData.flyThresh)), propFields); % Get fly properties
+% %     props = regionprops(imdilate(delta >= min(arenaData.flyThresh),[1 1 1; 1 1 1]), propFields);
+%     props = regionprops(imerode(delta >= threshold,[1 1 1; 1 1 1]), propFields);
+%     
+    [props, delta, threshold]=detectflies(currentFrame, arenaData);
+    props=props';
+
+    if length(props)>15
+        disp("Detecting too many flies")
+        error("Detecting too many flies")
+    elseif length(props)<15
+        disp("Detected less than 15 flies")
+    end
 
     %Median was a cludge, but this should probably be done for eachfly,
     %unclear how it is supposed to work?
@@ -186,25 +196,39 @@ while toc < duration
     flyTracks.orientation = NaN(1,flyTracks.nFlies);
     flyTracks.majorAxisLength = NaN(1,flyTracks.nFlies);
     
-    for i = 1:size(props,1)
-        % calculate the distance (in px) between previous fly positions and
-        % newly detected objects, identify matches.
-        tmp = [props(i).Centroid; [flyTracks.lastCentroid{:}]'];
-        dx = repmat(dot(tmp, tmp, 2), 1, size(tmp, 1));
-        d = sqrt(dx + dx' - 2* tmp* tmp');
-        d = d(1,2:(length(flyTracks.lastCentroid) + 1));
-
-        % a props element corresponds to a fly when the centroid distance
-        % is < 18 px since last frame
-        flyIdx = find(d < 30);%increased to 30 for higher res camera
+%     if size(props,1)<2
+%         error("Not enough fields")
+%     end
+    
+    for i = 1:length(props)
         
-        if flyIdx
-            flyTracks.centroid(flyIdx,:) = single(props(i).Centroid);
-            flyTracks.orientation(flyIdx) = single(props(i).Orientation);
-            flyTracks.majorAxisLength(flyIdx) = ...
-                single(props(i).MajorAxisLength);
-            flyTracks.lastCentroid{flyIdx} = single(props(i).Centroid)';
-        end
+%         % calculate the distance (in px) between previous fly positions and
+%         % newly detected objects, identify matches.
+%         tmp = [props(i).Centroid; [flyTracks.lastCentroid{:}]'];
+%         dx = repmat(dot(tmp, tmp, 2), 1, size(tmp, 1));
+%         d = sqrt(dx + dx' - 2* tmp* tmp');
+%         d = d(1,2:(length(flyTracks.lastCentroid) + 1));
+% 
+%         % a props element corresponds to a fly when the centroid distance
+%         % is < 18 px since last frame
+%         flyIdx = find(d < 30);%increased to 30 for higher res camera
+%         
+        
+%         if flyIdx
+%         if length(props(i).Centroid)>0
+        flyTracks.centroid(i,:) = single(props(i).Centroid);
+        flyTracks.orientation(i) = single(props(i).Orientation);
+        flyTracks.majorAxisLength(i) = ...
+            single(props(i).MajorAxisLength);
+        flyTracks.lastCentroid{i} = single(props(i).Centroid)';
+%         end
+%         end
+
+%         if i==3
+%             error('check here')
+%         end
+
+    
         
     end
     
@@ -293,11 +317,16 @@ if recordMovie
 end
 
 save(strcat(fpath,t,".mat"), "flyTracks");
+disp(strcat("Saved File at ",fpath,t,".mat"));
+
+disp("Plotting Summary statistics")
+CalculateOdorOccupancy(flyTracks, fpath)
+disp("Done");
 
 % Helper function for updating the plot
     function [tailCount c ori] = updatePlot(h, currentFrame, duration, ...
-            epoch, tailCount, flyTracks, colors, c, ori)
-
+        epoch, tailCount, flyTracks, colors, c, ori)
+    
         set(h,'CData',currentFrame)     % update display with current frame
         
         
@@ -306,7 +335,7 @@ save(strcat(fpath,t,".mat"), "flyTracks");
             's remaining)'])
         tailCount = tailCount + 1;
         
-        
+      
         % calculate major axis limits
         for i = 1:flyTracks.nFlies
             
@@ -321,42 +350,45 @@ save(strcat(fpath,t,".mat"), "flyTracks");
             
             majAx{i} = [lx; ly];
         end
+
+
+% update the display with new cen, maj ax, and running tails
+for k = 1:flyTracks.nFlies
+    
+    hold all
+    
+    if tailCount > 1
+        set(c(k), 'XData', squeeze(flyTracks.runningTracks(k,1,:)), ...
+            'YData', squeeze(flyTracks.runningTracks(k,2,:)),...
+            'LineWidth', 2, 'Color', colors(k,:));
         
+        set(ori(k), 'XData', majAx{k}(1,:), ...
+            'YData', majAx{k}(2,:),...
+            'LineWidth', 2, 'Color', 'g');
         
-        % update the display with new cen, maj ax, and running tails
-        for k = 1:flyTracks.nFlies
-            
-            hold all
-            
-            if tailCount > 1
-                set(c(k), 'XData', squeeze(flyTracks.runningTracks(k,1,:)), ...
-                    'YData', squeeze(flyTracks.runningTracks(k,2,:)),...
-                    'LineWidth', 2, 'Color', colors(k,:));
-                
-                set(ori(k), 'XData', majAx{k}(1,:), ...
-                    'YData', majAx{k}(2,:),...
-                    'LineWidth', 2, 'Color', 'g');
-                
-            else
-                c(k) = plot(squeeze(flyTracks.runningTracks(k,1,:)),...
-                    squeeze(flyTracks.runningTracks(k,2,:)),...
-                    'LineWidth', 2, 'color', colors(k,:));
-                
-                ori(k) = plot(majAx{k}(1,:), majAx{k}(2,:), ...
-                    'LineWidth',2,'color','g');
-                
-            end
-            
-        end
+    else
+        c(k) = plot(squeeze(flyTracks.runningTracks(k,1,:)),...
+            squeeze(flyTracks.runningTracks(k,2,:)),...
+            'LineWidth', 2, 'color', colors(k,:));
         
-        drawnow
+        ori(k) = plot(majAx{k}(1,:), majAx{k}(2,:), ...
+            'LineWidth',2,'color','g');
         
-        if recordMovie
-            writeVideo(writerObj,getframe);
-        end
     end
+    
+end
+
+  drawnow
+    
+    if recordMovie
+        writeVideo(writerObj,getframe);
+    end
+
+
 try
 webread('http://lab.debivort.org/mu.php?id=smells&st=2');
+end
+
 end
 end
 

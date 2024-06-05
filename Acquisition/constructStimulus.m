@@ -1,4 +1,4 @@
-function [stimTimes, stim, duration] = constructStimulus(chargeTime)
+function [stimTimes, stim, duration] = constructStimulus(chargeTime, odors, conc)
 % function [stimTimes, stim, duration] = constructStimulus
 %
 % Currently only supports a single pair of odors.
@@ -23,12 +23,12 @@ end
 % conc = [0.16 0.13];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
 
 
-odors = {'Air' 'MCH'};
-conc = [0.03 0.15];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
-odors = {'OCT' 'Air'};
-conc = [.5 0.03];%  -aMW ctrl   
-odors = {'Air' 'OCT'}; %SK, this is the line you want to swap to
-conc = [0.03 .5];%  -aMW ctrl  
+% odors = {'Air' 'MCH'};
+% conc = [0.03 0.15];%  -aMW ctrl               % proportion saturated vapor          % 150119 - balancing concs:
+% odors = {'OCT' 'Air'};
+% conc = [.5 0.03];%  -aMW ctrl   
+% odors = {'Air' 'OCT'}; %SK, this is the line you want to swap to
+% conc = [0.03 .5];%  -aMW ctrl  
 % odors = {'OCT' 'OCT'}; %SK, this is the line you want to swap to
 % conc = [0.5 0.5];%  -aMW ctrl  
 % 15 11
@@ -56,13 +56,12 @@ conc = [0.03 .5];%  -aMW ctrl
 % preTime = 180;                       % wait time before first odor block
 % postTime = 30;                      % wait time after last odor block
 
-%Adjust the duration for odors
-odorDur = 30;                        % in sec
+odorDur = 180;                        % in sec
 isi = 10;                            % in sec
 nBlocks = 1;                         % number of odor blocks
 %180
-preTime = 30;                       % wait time before first odor block
-postTime = 10;                      % wait time after last odor block
+preTime = 180;                       % wait time before first odor block
+postTime = 30;                      % wait time after last odor block
 % odorDur = 180;                        % in sec
 % isi = 10;                            % in sec
 % nBlocks = 1;                         % number of odor blocks
@@ -105,16 +104,17 @@ for qq = 1:nBlocks
     
 end
 
-if v{1}{find(v{2} == valve(1))} == odors{1}
-    conc(1) = conc(1);
-else
-    conc(1) = conc(2);
-end
-if v{1}{find(v{3} == valve(2))} == odors{1}
-    conc(2) = conc(1);
-else
-    conc(2) = conc(2);
-end
+% This is commented out because there's only one vial
+% if v{1}{find(v{2} == valve(1))} == odors{1}
+%     conc(1) = conc(1);
+% else
+%     conc(1) = conc(2);
+% end
+% if v{1}{find(v{3} == valve(2))} == odors{1}
+%     conc(2) = conc(1);
+% else
+%     conc(2) = conc(2);
+% end
 
 
 %Build stimulus epochs
