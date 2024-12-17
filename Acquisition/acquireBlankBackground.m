@@ -1,3 +1,4 @@
+%make sure the infrared is on and room light is off
 function acquireBlankBackground
 
 global vid;

@@ -32,7 +32,7 @@ dlmwrite(cenID, [])                         % create placeholder ASCII file
 dlmwrite(oriID, [])                         % create placeholder ASCII file
 dlmwrite(majID, [])                         % create placeholder ASCII file
 
-recordMovie = 0;                            % whether to stream experiment to MP4 movie file
+recordMovie = 1;                            % whether to stream experiment to MP4 movie file
 useTemplateMatching = 0;                    % whether to use template matching for bg detection
 recordThermocouple = 0;                     % whether to record data from thermocouple - synced with display updates, every 'dispRate' frames
 if recordThermocouple, initializeThermocouple; end

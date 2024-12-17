@@ -1,4 +1,6 @@
-
+%fix USB port connection issue after first run
+%Alicat massflow control connection problem
+%edit initializeCamera to include entire view of the arena
 function [NI AC vid] = initializeTunnels
 
 try

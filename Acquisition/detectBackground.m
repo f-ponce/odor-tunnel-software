@@ -1,3 +1,8 @@
+%make it possible to run without having to load flies
+%line 360 sometimes throws an error ('bb' unrecognized)
+%if not all flies are recognized, try running again
+%make sure all tunnels are active (1)
+%only runs when flies are in chamber
 function out = detectBackground
 %DETECTBACKGROUND Detect individual tunnels and flies.
 %   OUT = DETECTBACKGROUND detects tunnels and flies, crops the camera ROI
@@ -236,8 +241,8 @@ while toc < timeout
         
     end
 %     error('debug here')
+    
     if ct == 1, hasFlies = ~cellfun('isempty',{tunnel.fly}); end
-
     
     % get 'global bounding box', set camera ROI
 %     disp("ct")

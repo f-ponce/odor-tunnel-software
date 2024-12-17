@@ -70,7 +70,8 @@ postTime = 30;                      % wait time after last odor block
 % postTime = 30;                      % wait time after last odor block
 
 % Read valve assignments from csv file
-fid = fopen('.\TunnelSoftware\Acquisition\odors.csv');
+fid = fopen('C:\Users\Debivortlab\Documents\MATLAB\TunnelSoftware\Acquisition\odors.csv', 'r');%fopen('.\TunnelSoftware\Acquisition\odors.csv');
+disp(fid)
 v = textscan(fid, '%s %d %d', 'delimiter', ','); % Format: {Odor, SideA, SideB}
 fclose(fid);
 
