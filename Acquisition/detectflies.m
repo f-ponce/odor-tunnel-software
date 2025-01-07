@@ -20,7 +20,7 @@ function [props, delta, threshold]=detectflies(currentFrame, arenaData)
         thresholdedimage=tunnel_roi >= threshold;
         for erodes=1:numerodes
             thresholdedimage=imerode(thresholdedimage,[1 1 1; 1 1 1]);
-%             disp(erodes);
+            % disp(erodes);
         end
     
         props_roi = regionprops(thresholdedimage, propFields);
@@ -35,13 +35,12 @@ function [props, delta, threshold]=detectflies(currentFrame, arenaData)
 
 
         if sum(allareas_bool)
-%             disp(i)
+            % disp(i)
             props_roi.Centroid=props_roi.Centroid+tunnel_corner_indexes(1:2,i)';
             props(i)=props_roi;
 
         else
             save("image_debug_"+string(datetime('now','Format', 'yy-MM-dd_HH_mm_ss'))+".mat", "currentFrame", "arenaData");
-            disp("Problem here")
             error("Failed to detect fly")
         end
 

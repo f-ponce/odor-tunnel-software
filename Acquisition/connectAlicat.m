@@ -9,8 +9,12 @@ function varargout=connectAlicat(aliComm)
 
 
 if nargin==0
+    % %disconnecting existing serial port connections
+    % existing_serialports = serialportfind;
+    % delete(existing_serialports);
 
     global aliComm
+
 %     aliComm=serial('COM3',... %%RTM EDIT from COM4
 %         'TimeOut', 2,...
 %         'BaudRate', 19200,...

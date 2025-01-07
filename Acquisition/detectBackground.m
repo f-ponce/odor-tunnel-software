@@ -25,19 +25,12 @@ if isrunning(vid)
 end
 
 flysize=100;
-% vid.ROIPosition = [0 0 640 480];
-% vid.ROIPosition = [250 250 1800 800];
 
-%coordinates to limit ROI to just the arena, adjust if all arenas aren't in
-%frame
-x1=660;
-y1=298;
-% x1=0;
-% y1=0;
-% x2=1800+x1;
-% y2=800+y1;
-x2=1744;
-y2=712;
+%coordinates to show the full arena
+x1=660;%width from the upper left corner
+y1=350;
+x2=x1+1080;
+y2=y1+280;
 vid.ROIPosition = [x1 y1 x2 y2];
 
 triggerconfig(vid,'manual');

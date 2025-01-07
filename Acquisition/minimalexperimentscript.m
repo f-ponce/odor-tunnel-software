@@ -22,7 +22,7 @@ initializeTunnels
 %% IF necessary, use acquireBlankBackground with lights off and no flies in arena
 % Once per day is usually fine, sometimes you can go weeks without changing
 % if nothing gets bumped
-acquireBlankBackground
+%acquireBlankBackground
 
 %% Do tracking and odors Must be in MATLAB directory (type PWD, should BE MATLAB)
 dbstop if error

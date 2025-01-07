@@ -32,7 +32,7 @@ dlmwrite(cenID, [])                         % create placeholder ASCII file
 dlmwrite(oriID, [])                         % create placeholder ASCII file
 dlmwrite(majID, [])                         % create placeholder ASCII file
 
-recordMovie = 0;                            % whether to stream experiment to MP4 movie file
+recordMovie = 1;                            % whether to stream experiment to MP4 movie file
 useTemplateMatching = 0;                    % whether to use template matching for bg detection
 recordThermocouple = 0;                     % whether to record data from thermocouple - synced with display updates, every 'dispRate' frames
 if recordThermocouple, initializeThermocouple; end
@@ -74,11 +74,13 @@ if useTemplateMatching
     arenaData = backgroundTemplateMatching;     % run bg detection script
 else
     arenaData = detectBackground;               % run bg detection script
+    disp('detected background')
 end
 
 % Set up video writer object to record movie
 if recordMovie
-    writerObj = VideoWriter(['flyTracksMovie-' t],'MPEG-4');
+    movie_dir = 'C:\Users\Debivortlab\Documents\MATLAB\TunnelData\Movies\';
+    writerObj = VideoWriter([movie_dir 'flyTracksMovie-' t],'MPEG-4');
     writerObj.Quality = 100;
     writerObj.FrameRate = 24; % estimated frame rate (fps)
     dispRate = 2;        % increase frame rate for smooth playback of video
